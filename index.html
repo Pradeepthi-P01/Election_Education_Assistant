@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectWise — India's Smart Election Education Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="tricolor-bar"></div>
+    <div class="app-bg" id="app-bg"></div>
+    <nav>
+        <a href="#home" class="logo" aria-label="ElectWise Logo">
+            <span style="font-size: 1.8rem;">🗳️</span> ElectWise
+        </a>
+        <div class="hamburger" id="mobileMenuBtn" aria-label="Toggle Menu">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#home" data-i18n="nav_home">Home</a>
+            <a href="#eligibility" data-i18n="nav_eligibility">Eligibility</a>
+            <a href="#timeline" data-i18n="nav_timeline">Timeline</a>
+            <a href="#simulation" data-i18n="nav_simulation">Simulation</a>
+            <a href="#constituency" data-i18n="nav_constituency">Constituency</a>
+            <a href="#results" data-i18n="nav_results">Results</a>
+            <a href="#candidate" data-i18n="nav_candidate">Candidate</a>
+            <a href="#voteriq" data-i18n="nav_quiz">Quiz</a>
+            <a href="#myths" data-i18n="nav_myths">Myth vs Fact</a>
+            <a href="#guide" data-i18n="nav_guide">Guide</a>
+        </div>
+        <div class="nav-controls">
+            <button id="langToggleBtn" class="btn-secondary" aria-label="Toggle Language">हिं</button>
+            <button id="fontToggleBtn" class="btn-secondary" aria-label="Toggle Font Size">A+</button>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- SECTION 1: HOME / DASHBOARD -->
+        <section id="home" class="visible">
+            <div class="home-content">
+                <h1 style="font-size: 2.8rem; margin-bottom: 1rem; font-weight: 700;">
+                    <span data-i18n="hero_h1_1">96 Crore Voters.</span> <span data-i18n="hero_h1_2">One Decision.</span>
+                    <span data-i18n="hero_h1_3">Make It Count.</span>
+                </h1>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem; font-weight: 500;"
+                    data-i18n="hero_subtitle">India's smartest election guide — learn, practice, and vote with
+                    confidence.</p>
+                <div
+                    style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 2;">
+                    <a href="#eligibility" class="btn-primary" data-i18n="hero_cta1"
+                        style="animation: pulse-glow 3s infinite;">Check My Eligibility</a>
+                    <a href="#guide" class="btn-secondary" data-i18n="hero_cta2">Start Learning</a>
+                </div>
+
+                <div class="stats-bar reveal">
+                    <div class="stat-item">
+                        <h3 class="stat-number" data-target="96.88" data-suffix=" Cr">0</h3>
+                        <p data-i18n="stat_voters">Registered Voters</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number" data-target="10.5" data-suffix=" L">0</h3>
+                        <p data-i18n="stat_booths">Polling Booths</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number" data-target="543">0</h3>
+                        <p data-i18n="stat_seats">Lok Sabha Constituencies</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number" data-target="18" data-suffix="+ Cr">0</h3>
+                        <p data-i18n="stat_first">First-Time Voters (2024)</p>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; text-align: right; margin-top: -2rem; margin-bottom: 2rem;">Source: ECI
+                    2024</p>
+
+                <div class="card dashboard-card reveal">
+                    <h3 data-i18n="dash_title">Your Personalized Progress</h3>
+                    <div class="grid-2 reveal" style="text-align: left; margin: 1.5rem 0;">
+                        <div id="dash-eligibility">⏳ <span data-i18n="dash_el">Eligibility Check: Pending</span></div>
+                        <div id="dash-quiz">⏳ <span data-i18n="dash_qz">Quiz: Not Taken</span></div>
+                        <div id="dash-sim">⏳ <span data-i18n="dash_sm">Voting Simulation: Pending</span></div>
+                        <div id="dash-guide">⏳ <span data-i18n="dash_gd">First-Time Guide: Not Started</span></div>
+                    </div>
+                    <a href="#eligibility" id="dash-next-btn" class="btn-primary reveal" data-i18n="dash_btn">Your Next
+                        Step →</a>
+                </div>
+
+                <div class="grid-3 reveal">
+                    <div class="card quick-nav-card">
+                        <div class="icon">🗳️</div>
+                        <h4 data-i18n="qn_1_t">Eligibility Checker</h4>
+                        <p data-i18n="qn_1_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Am I eligible to vote?</p>
+                        <a href="#eligibility" class="btn-secondary">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">📅</div>
+                        <h4 data-i18n="qn_2_t">Election Timeline</h4>
+                        <p data-i18n="qn_2_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">How does an election work?
+                        </p>
+                        <a href="#timeline" class="btn-secondary">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">🗺️</div>
+                        <h4 data-i18n="qn_booth_t">Find Polling Booth</h4>
+                        <p data-i18n="qn_booth_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Where do I vote?</p>
+                        <a href="#booths" class="btn-secondary">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">🎮</div>
+                        <h4 data-i18n="qn_sim_t">Voting Simulation</h4>
+                        <p data-i18n="qn_sim_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Practice the voting
+                            process</p>
+                        <a href="#simulation" class="btn-secondary">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">📍</div>
+                        <h4 data-i18n="qn_3_t">Constituency Explorer</h4>
+                        <p data-i18n="qn_3_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Discover local leaders &
+                            stats</p>
+                        <a href="#constituency" class="btn-secondary" data-i18n="btn_go">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">📊</div>
+                        <h4 data-i18n="qn_4_t">2024 Results Dashboard</h4>
+                        <p data-i18n="qn_4_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">View India's General
+                            Election tally</p>
+                        <a href="#results" class="btn-secondary" data-i18n="btn_go">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">📰</div>
+                        <h4 data-i18n="qn_5_t">Profile Insights</h4>
+                        <p data-i18n="qn_5_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Make an informed choice
+                        </p>
+                        <a href="#candidate" class="btn-secondary" data-i18n="btn_go">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">🎯</div>
+                        <h4 data-i18n="qn_6_t">Voter IQ Challenge</h4>
+                        <p data-i18n="qn_6_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Find out your Voter IQ!
+                        </p>
+                        <a href="#voteriq" class="btn-secondary" data-i18n="btn_go">Go →</a>
+                    </div>
+                    <div class="card quick-nav-card">
+                        <div class="icon">🤔</div>
+                        <h4 data-i18n="qn_myth_t">Myth vs Fact</h4>
+                        <p data-i18n="qn_myth_d" style="font-size:0.9rem; margin:0.5rem 0 1rem;">Click cards to bust
+                            election myths.</p>
+                        <a href="#myths" class="btn-secondary" data-i18n="btn_go">Go →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="wave-container"></div>
+        </section>
+        </section>
+
+        <!-- SECTION 2: ELIGIBILITY CHECKER -->
+        <section id="eligibility">
+            <canvas id="eligibility-ripple-canvas"></canvas>
+            <div class="eligibility-viewport-wrapper">
+                <h2 class="reveal"><span data-i18n="sec_el_title">Eligibility Checker</span>
+                    <div class="heading-underline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </h2>
+                <div class="card card-entrance reveal"
+                    style="max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(8px);">
+                    <form id="eligibility-form">
+                        <div class="form-group">
+                            <label for="el_name" data-i18n="lbl_name">Full Name</label>
+                            <input type="text" id="el_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="el_age" data-i18n="lbl_age">Age</label>
+                            <input type="number" id="el_age" min="1" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="el_state" data-i18n="lbl_state">State / UT</label>
+                            <select id="el_state" required>
+                                <!-- Injected -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lbl_citizen">Are you an Indian Citizen?</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="el_cit" value="yes" required> Yes</label>
+                                <label><input type="radio" name="el_cit" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lbl_reside">Are you ordinarily residing in India?</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="el_res" value="yes" required> Yes</label>
+                                <label><input type="radio" name="el_res" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lbl_mind">Are you of sound mind? (Not declared unsound by a competent
+                                court)</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="el_mind" value="yes" required> Yes</label>
+                                <label><input type="radio" name="el_mind" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lbl_crime">Are you currently serving a criminal sentence or disqualified
+                                for corrupt practices?</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="el_crime" value="yes" required> Yes</label>
+                                <label><input type="radio" name="el_crime" value="no"> No</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;" data-i18n="btn_check_el">Check
+                            Eligibility</button>
+                    </form>
+
+                    <div id="el_skeleton" style="display: none; margin-top: 2rem;">
+                        <div class="skeleton" style="width: 50%;"></div>
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                    </div>
+
+                    <div id="el_result" class="card"
+                        style="display: none; margin-top: 2rem; border: 2px solid transparent; background: rgba(255, 255, 255, 0.9);">
+                        <h3 id="el_res_title">Result</h3>
+                        <p id="el_res_msg" style="margin-bottom: 1rem;"></p>
+                        <div id="el_legal"
+                            style="font-size: 0.8rem; color: #666; margin-bottom: 1rem; padding: 1rem; background: var(--bg); border-radius: 8px;">
+                        </div>
+                        <div id="el_actions"
+                            style="display: none; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                            <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary">1. Register on
+                                voters.eci.gov.in</a>
+                            <button class="btn-secondary"
+                                onclick="Nav.show('guide'); history.pushState(null,'','#guide');">2. Read Voter
+                                Guide</button>
+                            <button class="btn-secondary"
+                                onclick="Nav.show('booths'); history.pushState(null,'','#booths');">3. Find your
+                                booth</button>
+                        </div>
+                        <button id="el_copy" class="btn-primary" data-i18n="btn_copy">Copy Result</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: TIMELINE -->
+        <section id="timeline">
+            <canvas id="timeline-wave-canvas"></canvas>
+            <div class="timeline-viewport-wrapper">
+                <h2 class="reveal"><span data-i18n="sec_tl_title">Election Timeline</span>
+                    <div class="heading-underline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </h2>
+                <div class="timeline reveal" id="tl_container">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: BOOTH FINDER -->
+        <section id="booths">
+            <div class="container subtle-reveal">
+                <h2><span data-i18n="sec_booth_title">Find Polling Booth</span>
+                    <div class="heading-underline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </h2>
+                <div class="card">
+                <div class="grid-2" style="margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label data-i18n="lbl_b_state">Select State / UT</label>
+                        <select id="booth_state" onchange="ElectWise.booths.updateDistricts()">
+                            <!-- Injected -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lbl_b_dist">Select District</label>
+                        <select id="booth_dist" onchange="ElectWise.booths.showBooths()" disabled>
+                            <option value="">Choose State First...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="map-wrapper" id="map-wrapper">
+                    <iframe id="map_iframe"
+                        style="width:100%; height:100%; min-height:500px; border:none; display:block;"
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=68.0,8.0,97.5,37.5&layer=mapnik"></iframe>
+                </div>
+
+                <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 1rem;"
+                    data-i18n="booth_note">Booth data is illustrative. Find your actual booth at voters.eci.gov.in</p>
+
+                <div id="booth_selected_display"
+                    style="display:none; text-align:center; padding:1rem; background:var(--cream); border:2px solid var(--saffron); border-radius:8px; margin-bottom:1rem; font-weight:600; color:var(--navy);">
+                </div>
+
+                <div id="booth_skeleton" style="display: none; margin-bottom: 1rem;">
+                    <div class="skeleton" style="height: 100px;"></div>
+                    <div class="skeleton" style="height: 100px;"></div>
+                </div>
+
+                <div id="booth_list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <section id="simulation">
+            <div class="simulation-bg-overlay"></div>
+
+            <div class="simulation-viewport-wrapper">
+                <h2 class="reveal"><span data-i18n="sec_sim_title">Voting Simulation</span>
+                    <div class="heading-underline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </h2>
+                <div class="sim-container card card-entrance"
+                    style="background: rgba(11, 31, 79, 0.35); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);">
+
+                    <div id="sim-step-1" class="sim-step active">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🗳️</div>
+                        <h3 style="color: white;" data-i18n="sim_1_t">Step 1: Enter Booth</h3>
+                        <p style="margin-bottom: 2rem;" data-i18n="sim_1_d">Welcome to the polling station. Please keep
+                            your phone away.</p>
+                        <button class="btn-primary" onclick="ElectWise.sim.nextStep(2)"
+                            data-i18n="btn_enter_booth">Enter Booth →</button>
+                    </div>
+
+                    <div id="sim-step-2" class="sim-step">
+                        <h3 style="color: white;" data-i18n="sim_2_t">Step 2: Identity Verification</h3>
+                        <div class="form-group"
+                            style="text-align: left; background: white; padding: 1.5rem; border-radius: 12px; color: black; margin-bottom: 1rem; border: 1px solid #ddd;">
+                            <div style="margin-bottom: 1rem;">
+                                <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 0.3rem;"
+                                    data-i18n="sim_lbl_name">Voter Name (Alphabets & Spaces only)</label>
+                                <input type="text" data-i18n-placeholder="ph_enter_name" placeholder="Enter Full Name"
+                                    style="width: 100%;" id="simVoterName">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 0.3rem;"
+                                    data-i18n="sim_lbl_id">Voter ID (Numbers only)</label>
+                                <input type="text" placeholder="e.g. 12345678" style="width: 100%; margin-bottom: 1rem;"
+                                    id="simVoterId">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 0.3rem;"
+                                    data-i18n="sim_lbl_age">Voter Age (18+ only)</label>
+                                <input type="number" placeholder="Enter Age" style="width: 100%;" id="simVoterAge">
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="sim_verify_btn" onclick="ElectWise.sim.verify()"
+                            data-i18n="btn_verify">Verify ID</button>
+                        <div id="sim_success_icon" style="display: none; margin-bottom: 1.5rem;">
+                            <div class="success-checkmark">
+                                <div class="check-icon">
+                                    <span class="icon-line line-tip"></span>
+                                    <span class="icon-line line-long"></span>
+                                    <div class="icon-circle"></div>
+                                    <div class="icon-fix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="sim_verify_msg"
+                            style="margin-top: 1rem; color: var(--green); font-weight: bold; display: none;">✅ Identity
+                            Verified. Proceed to vote.</p>
+                        <button class="btn-primary" id="sim_proceed_btn" style="display: none; margin-top: 1rem;"
+                            onclick="ElectWise.sim.nextStep(3)" data-i18n="btn_proceed_evm">Proceed to EVM →</button>
+                    </div>
+
+                    <div id="sim-step-3" class="sim-step">
+                        <h3 style="color: white;" data-i18n="sim_3_t">Step 3: Cast Your Vote</h3>
+                        <div class="evm-machine">
+                            <h4 style="margin-bottom: 1rem; text-align: center;">BALLOT UNIT</h4>
+                            <div class="evm-btn" onclick="ElectWise.sim.selectCandidate(1)"><span>1. 🌸 Priya Sharma
+                                    (NPP)</span>
+                                <div class="blue-btn"></div>
+                            </div>
+                            <div class="evm-btn" onclick="ElectWise.sim.selectCandidate(2)"><span>2. 🌾 Rajesh Kumar
+                                    (BJD)</span>
+                                <div class="blue-btn"></div>
+                            </div>
+                            <div class="evm-btn" onclick="ElectWise.sim.selectCandidate(3)"><span>3. 🌊 Sunita Patel
+                                    (DA)</span>
+                                <div class="blue-btn"></div>
+                            </div>
+                            <div class="evm-btn" onclick="ElectWise.sim.selectCandidate(4)"><span>4. ✖️ NOTA</span>
+                                <div class="blue-btn"></div>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="sim_confirm_btn" disabled onclick="ElectWise.sim.castVote()"
+                            data-i18n="btn_confirm_vote">Confirm Vote →</button>
+                    </div>
+
+                    <div id="sim-step-4" class="sim-step">
+                        <h3 style="color: white;" data-i18n="sim_4_t">Step 4: VVPAT Receipt</h3>
+                        <p data-i18n="sim_4_d">Your vote has been recorded. This slip will drop into the sealed box.</p>
+                        <div class="vvpat-box">
+                            <div class="vvpat-window">
+                                <div class="vvpat-slip" id="vvpat_slip_content">
+                                    <!-- injected -->
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="sim_vvpat_next" style="display:none;"
+                            onclick="ElectWise.sim.nextStep(5)" data-i18n="btn_proceed">Proceed →</button>
+                    </div>
+
+                    <div id="sim-step-5" class="sim-step">
+                        <h3 style="color: white;" data-i18n="sim_5_t">Step 5: Ink Mark</h3>
+                        <p data-i18n="sim_5_d">You have successfully voted! Your finger has been marked with indelible
+                            ink.</p>
+                        <div class="ink-mark">
+                            <div class="ink-dot" id="ink_dot"></div>
+                        </div>
+                        <button class="btn-primary" onclick="ElectWise.sim.showResults()" data-i18n="btn_see_res">See
+                            Results →</button>
+                    </div>
+
+                    <div id="sim-step-6" class="sim-step" style="max-width: 600px;">
+                        <h3 style="color: white;" data-i18n="sim_6_t">Live Mock Tally</h3>
+                        <div id="sim_results_container" style="text-align: left; margin: 2rem 0;">
+                            <!-- injected -->
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button class="btn-secondary" style="color: white; border-color: white;"
+                                onclick="ElectWise.sim.reset()" data-i18n="btn_reset_sim">Reset Simulation</button>
+                            <button class="btn-primary" onclick="ElectWise.sim.nextStep(1)"
+                                data-i18n="btn_vote_again">Vote Again</button>
+                        </div>
+                    </div>
+
+                </div>
+        </section>
+
+        <!-- SECTION 6: CONSTITUENCY EXPLORER -->
+        <section id="constituency">
+            <div class="constituency-dot-grid"></div>
+            <div class="const-blob const-blob-1"></div>
+            <div class="const-blob const-blob-2"></div>
+            <div class="const-blob const-blob-3"></div>
+
+            <div class="container">
+                <h2 class="const-explorer-title" data-i18n="sec_const_title">Constituency Explorer</h2>
+                <div class="const-explorer-subtitle" data-i18n="sec_const_sub">Search for insights into your local constituency performance.</div>
+                <div class="const-title-underline"></div>
+
+                <div class="constituency-grid">
+                    <!-- LEFT CARD: FILTER -->
+                    <div class="constituency-left-card card-entrance reveal">
+                        <h3 class="const-card-title" data-i18n="lbl_c_filter">Filter Selection</h3>
+                        
+                        <div class="form-group">
+                            <label data-i18n="lbl_c_state">Select State / UT</label>
+                            <select id="constituencyState" class="const-select">
+                                <!-- Injected -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label data-i18n="lbl_c_const">Select Constituency</label>
+                            <select id="constituencyDistrict" class="const-select" disabled>
+                                <option value="" data-i18n="opt_choose_state">Choose State First...</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-analyze-data" onclick="showConstituency()" data-i18n="btn_search_const">Search Constituency</button>
+                    </div>
+
+                    <!-- RIGHT CARD: RESULT -->
+                    <div class="constituency-right-card card-entrance reveal" id="ce_result" style="display: none;">
+                        <div id="ce_result_content">
+                            <!-- injected -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: 2024 RESULTS DASHBOARD -->
+        <section id="results">
+
+            <h2 class="reveal"><span data-i18n="sec_results_title">📊 2024 Lok Sabha Results</span>
+                <div class="heading-underline">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </h2>
+            <p class="reveal" style="text-align: center; margin-bottom: 2rem; color: #ddd;" data-i18n="sec_results_sub">
+                India's 18th General Election — Final Results</p>
+
+            <div class="container" style="padding-top: 0; padding-bottom: 0;">
+                <!-- State Filter -->
+                <div
+                    style="background:rgba(255,255,255,0.1); padding:1rem; border-radius:12px; margin-bottom:2rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center;">
+                    <label style="color:white; font-size:0.9rem;" data-i18n="lbl_view_state">View State Results:</label>
+                    <select id="resultsStateFilter" onchange="ElectWise.results.update(this.value)"
+                        style="background:white; color:black; padding:0.5rem 1rem; border-radius:8px; border:none; min-width:200px;">
+                        <option value="All India" data-i18n="opt_all_india">All India (National)</option>
+                    </select>
+                </div>
+                <div class="results-summary card-entrance">
+                    <div class="res-stat-box">
+                        <div data-i18n="res_total_seats_lbl">🗳️ Total Seats</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--gold);" id="res_total_seats">543
+                        </div>
+                    </div>
+                    <div class="res-stat-box" id="res_nda_stat">
+                        <div data-i18n="res_nda_maj_lbl">🏆 NDA Majority</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--green);">293</div>
+                    </div>
+                    <div class="res-stat-box">
+                        <div data-i18n="res_turnout_lbl">📊 Turnout</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: white;">65.79%</div>
+                    </div>
+                    <div class="res-stat-box">
+                        <div data-i18n="res_polling_lbl">🗓️ Polling</div>
+                        <div style="font-size: 1rem; font-weight: bold; color: white; margin-top: 5px;">Apr 19–Jun 1</div>
+                    </div>
+                    <div class="res-stat-box">
+                        <div data-i18n="res_results_date_lbl">📋 Results Date</div>
+                        <div style="font-size: 1rem; font-weight: bold; color: white; margin-top: 5px;">June 4, 2024</div>
+                    </div>
+                </div>
+
+                <div class="stacked-bar card-entrance" title="Seat Distribution" id="res_stacked_bar">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <div class="grid-3" style="margin-bottom: 2rem;" id="results_party_grid">
+                    <!-- Cards injected -->
+                </div>
+
+                <div class="grid-2 card-entrance" id="res_alliance_grid">
+                    <div class="res-stat-box" style="text-align: left; position: relative;">
+                        <span class="party-badge"
+                            style="background: var(--green); color: white; position: absolute; top: 1rem; right: 1rem;"
+                            data-i18n="res_majority_badge">MAJORITY</span>
+                        <h3 style="color:white;" data-i18n="res_nda_alliance">NDA Alliance</h3>
+                        <p style="color: #ddd; font-size: 0.9rem;" data-i18n="res_nda_desc">BJP + TDP + JD(U) + others</p>
+                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--gold); margin-top: 0.5rem;">293 <span
+                                style="font-size: 1rem; color: #eee;" data-i18n="res_seats_lbl">Seats</span></div>
+                    </div>
+                    <div class="res-stat-box" style="text-align: left; position: relative;">
+                        <span class="party-badge"
+                            style="background: #0078D7; color: white; position: absolute; top: 1rem; right: 1rem;"
+                            data-i18n="res_opposition_badge">OPPOSITION</span>
+                        <h3 style="color:white;" data-i18n="res_india_alliance">INDIA Alliance</h3>
+                        <p style="color: #ddd; font-size: 0.9rem;" data-i18n="res_india_desc">INC + SP + AITC + DMK + others
+                        </p>
+                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--gold); margin-top: 0.5rem;">234 <span
+                                style="font-size: 1rem; color: #eee;" data-i18n="res_seats_lbl">Seats</span></div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem; color: #ddd; font-size: 0.9rem;" data-i18n="res_maj_mark">
+                    Majority Mark: 272 Seats</div>
+                
+                <div style="margin-top: 2.5rem; padding: 1.2rem; background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 12px; text-align: center; color: #bbb; font-size: 0.85rem;" data-i18n="res_warning">
+                    ⚠️ <strong>Data Accuracy Notice:</strong> Results shown here are for educational and illustrative purposes. 
+                    For official, real-time, and 100% accurate election data, always verify at the official 
+                    Election Commission of India results portal: 
+                    <a href="https://results.eci.gov.in" target="_blank" style="color: var(--gold); text-decoration: underline; font-weight: 600;">results.eci.gov.in</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: KNOW YOUR CANDIDATE -->
+        <section id="candidate">
+            <div class="container">
+                <h2 class="reveal section-title"><span data-i18n="sec_cand_title">📰 Profile Insights</span>
+                    <div class="heading-underline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </h2>
+                <p class="reveal section-subtitle" style="text-align: center; margin-bottom: 2rem;" data-i18n="sec_cand_sub">
+                    Professional profiles and electoral performance metrics for key candidates.</p>
+                <div class="reveal section-subtitle"
+                    style="text-align: center; margin-top: -1.5rem; margin-bottom: 2rem; font-size: 0.8rem;"
+                    data-i18n="sec_cand_source">⚠️ Data source: ECI Affidavits 2024. Verify exact details at
+                    affidavit.eci.gov.in</div>
+
+                <div class="card"
+                    style="margin: 0 auto 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; max-width: 600px; padding: 1.2rem;">
+                    <div class="form-group" style="margin: 0; flex-grow: 1;">
+                        <label data-i18n="lbl_filter_party" style="font-size: 0.8rem;">Filter by Party</label>
+                        <select id="cand_party_filter" onchange="ElectWise.candidate.render()" style="padding: 0.4rem;">
+                            <option value="All" data-i18n="opt_all_parties">All Parties</option>
+                            <option value="BJP">BJP</option>
+                            <option value="INC">INC</option>
+                            <option value="TDP">TDP</option>
+                            <option value="AIMIM">AIMIM</option>
+                            <option value="DMK">DMK</option>
+                            <option value="AAP">AAP</option>
+                            <option value="SP">SP</option>
+                            <option value="RJD">RJD</option>
+                            <option value="JD(U)">JD(U)</option>
+                            <option value="BRS">BRS</option>
+                            <option value="YSRCP">YSRCP</option>
+                            <option value="CPI(M)">CPI(M)</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" style="padding: 0.4rem 0.8rem;" onclick="renderCandidates(document.getElementById('cand_party_filter').value)"
+                        data-i18n="btn_search">🔍 Search</button>
+                </div>
+
+                <div class="candidate-grid" id="cand_grid">
+                    <!-- Cards injected -->
+                </div>
+
+                <p style="text-align: center; color: white; font-size: 0.8rem; margin-top: 2rem; opacity: 0.8;" data-i18n="cand_disclaimer">
+                    ⚠️ This data is illustrative and based on ECI affidavit format. Always verify candidate information at
+                    affidavit.eci.gov.in before voting.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 9: VOTER IQ CHALLENGE -->
+        <section id="voteriq">
+            <div class="container">
+                <h2 class="reveal"><span data-i18n="sec_quiz_title">🎯 Voter IQ Challenge</span>
+                    <div class="heading-underline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </h2>
+                <p class="reveal" style="text-align: center; margin-bottom: 2rem;" data-i18n="sec_quiz_sub">How well do you know
+                    Indian democracy? Find out your Voter IQ!</p>
+
+                <div class="card reveal" style="max-width: 700px; margin: 0 auto; text-align: center;">
+
+                    <div id="iq_start" class="active">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🧠</div>
+                        <h3 style="margin-bottom: 1rem; color: var(--navy);" data-i18n="iq_start_title">Are you a Democracy
+                            Champion?</h3>
+                        <p style="margin-bottom: 2rem; color: #555;" data-i18n="iq_start_desc">Answer 10 adaptive questions
+                            across 3 difficulty levels to determine your official Voter IQ score.</p>
+
+                        <div class="form-group" style="text-align: left; max-width: 300px; margin: 0 auto 2rem;">
+                            <label data-i18n="lbl_your_name">Your Name (for certificate)</label>
+                            <input type="text" id="iq_name" placeholder="Enter your full name"
+                                data-i18n-placeholder="ph_enter_name">
+                        </div>
+
+                        <button class="btn-primary" onclick="ElectWise.voteriq.start()" style="width: 200px;"
+                            data-i18n="btn_start_quiz">Start IQ Test →</button>
+                        <p id="iq_best_score" style="margin-top: 1rem; font-weight: 600; color: var(--green);"></p>
+                    </div>
+
+                    <div id="iq_active">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                            <span id="iq_progress" style="font-weight: 600; color: var(--navy);">Question 1 of 10</span>
+                            <span id="iq_badge" class="iq-level-badge"></span>
+                        </div>
+
+                        <h3 id="iq_q" style="margin-bottom: 2rem; min-height: 60px;">Question</h3>
+                        <div id="iq_opts">
+                            <!-- buttons injected -->
+                        </div>
+                        <p id="iq_feedback" style="margin-top: 1.5rem; font-weight: 500; min-height: 24px;"></p>
+                        <button class="btn-primary" id="iq_next_btn" style="display: none; margin-top: 1rem;"
+                            onclick="ElectWise.voteriq.next()">Next Question →</button>
+                    </div>
+
+                    <div id="iq_result">
+                        <h3 style="color: var(--navy); margin-bottom: 1rem;" data-i18n="iq_comp_title">Challenge Completed!</h3>
+                        <p style="color: #666; margin-bottom: 0.5rem;" data-i18n="iq_total_score_lbl">Your Total Score:</p>
+                        <div style="font-size: 5rem; color: var(--saffron); font-weight: 800; line-height: 1;"
+                            id="iq_score_txt">0</div>
+                        <div style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;" data-i18n="iq_out_of_lbl">out of 200
+                            possible points</div>
+
+                        <!-- Print area for certificate -->
+                        <div id="cert_print_area">
+                            <div class="certificate-card"
+                                style="background: linear-gradient(135deg, #fffdf5 0%, #fff8e1 30%, #fff3e0 60%, #fffdf5 100%); border: none; padding: 0; position: relative; overflow: hidden; border-radius: 16px; box-shadow: 0 12px 40px rgba(11,31,79,0.15), 0 0 0 4px #0B1F4F, 0 0 0 8px #FF6B1A, 0 0 0 10px #138808;">
+
+                                <!-- Tricolor top ribbon -->
+                                <div
+                                    style="height: 8px; background: linear-gradient(to right, #FF6B1A 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%);">
+                                </div>
+
+                                <!-- Decorative corner ornaments -->
+                                <div
+                                    style="position:absolute; top:16px; left:16px; width:50px; height:50px; border-top:3px solid #C5960C; border-left:3px solid #C5960C; border-radius:4px 0 0 0;">
+                                </div>
+                                <div
+                                    style="position:absolute; top:16px; right:16px; width:50px; height:50px; border-top:3px solid #C5960C; border-right:3px solid #C5960C; border-radius:0 4px 0 0;">
+                                </div>
+                                <div
+                                    style="position:absolute; bottom:16px; left:16px; width:50px; height:50px; border-bottom:3px solid #C5960C; border-left:3px solid #C5960C; border-radius:0 0 0 4px;">
+                                </div>
+                                <div
+                                    style="position:absolute; bottom:16px; right:16px; width:50px; height:50px; border-bottom:3px solid #C5960C; border-right:3px solid #C5960C; border-radius:0 0 4px 0;">
+                                </div>
+
+                                <div style="padding: 2.5rem 2rem 2rem; text-align: center;">
+                                    <!-- Ashoka Chakra inspired emblem -->
+                                    <div
+                                        style="width:70px; height:70px; margin: 0 auto 1rem; border-radius:50%; background: linear-gradient(135deg, #0B1F4F, #1a3a7a); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(11,31,79,0.3);">
+                                        <span style="font-size: 2rem;">🗳️</span>
+                                    </div>
+
+                                    <!-- Title -->
+                                    <h3
+                                        style="font-family: 'Georgia', serif; font-size: 2rem; color: #0B1F4F; margin-bottom: 0.2rem; letter-spacing: 2px; text-transform: uppercase;">
+                                        ElectWise</h3>
+                                    <div
+                                        style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.2rem;">
+                                        <div
+                                            style="height: 1px; width: 60px; background: linear-gradient(to right, transparent, #C5960C);">
+                                        </div>
+                                        <span
+                                            style="font-family: 'Georgia', serif; font-size: 1.1rem; color: #C5960C; letter-spacing: 3px; text-transform: uppercase;">Certificate
+                                            of Civic IQ</span>
+                                        <div
+                                            style="height: 1px; width: 60px; background: linear-gradient(to left, transparent, #C5960C);">
+                                        </div>
+                                    </div>
+
+                                    <!-- Decorative line -->
+                                    <div
+                                        style="width: 200px; height: 2px; background: linear-gradient(to right, transparent, #FF6B1A, #C5960C, #138808, transparent); margin: 0 auto 1.5rem;">
+                                    </div>
+
+                                    <p
+                                        style="font-family: 'Georgia', serif; font-size: 1rem; font-style: italic; color: #666; margin-bottom: 0.5rem;"
+                                        data-i18n="cert_proudly">
+                                        This is to proudly certify that</p>
+                                    <p style="font-family: 'Georgia', serif; font-size: 2.2rem; color: #FF6B1A; font-weight: 700; margin-bottom: 0.2rem; line-height: 1.2;"
+                                        id="cert_name">Voter Name</p>
+                                    <div
+                                        style="width: 180px; height: 2px; background: linear-gradient(to right, transparent, #C5960C, transparent); margin: 0 auto 1.2rem;">
+                                    </div>
+
+                                    <p style="font-size: 1.1rem; color: #444; margin-bottom: 0.4rem;"
+                                        data-i18n="cert_achieved">has achieved a Voter IQ Score of</p>
+                                    <div
+                                        style="display: inline-block; background: linear-gradient(135deg, #0B1F4F, #1a3a7a); color: white; padding: 0.5rem 2rem; border-radius: 30px; font-size: 1.4rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 1.2rem; box-shadow: 0 4px 12px rgba(11,31,79,0.3);">
+                                        <span id="cert_score">0/200</span>
+                                    </div>
+
+                                    <p style="font-size: 1.1rem; color: #444; margin-bottom: 0.2rem;"
+                                        data-i18n="cert_title_earned">earning the distinguished title of</p>
+                                    <p style="font-family: 'Georgia', serif; font-size: 1.8rem; color: #138808; font-weight: 700; margin-bottom: 1.5rem;"
+                                        id="cert_grade">Informed Citizen</p>
+
+                                    <!-- Bottom signatures area -->
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1.5rem; padding: 0 1rem;">
+                                        <div style="text-align: left;">
+                                            <div style="border-bottom: 2px solid #C5960C; width: 120px; margin-bottom: 5px;">
+                                            </div>
+                                            <span style="font-family: 'Georgia', serif; font-size: 0.8rem; color: #666;"
+                                                data-i18n="cert_date">Date</span>: <strong id="cert_date">24/04/2026</strong>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 2.5rem; line-height: 1;">🏅</div>
+                                            <div style="font-size: 0.6rem; color: #C5960C; font-weight: 700; letter-spacing: 2px;"
+                                                data-i18n="cert_verified">VERIFIED</div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div
+                                                style="border-bottom: 2px solid #C5960C; width: 120px; margin-bottom: 5px; margin-left: auto;">
+                                            </div>
+                                            <span style="font-family: 'Georgia', serif; font-size: 0.8rem; color: #666;"
+                                                data-i18n="cert_platform">Election Education Platform</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tricolor bottom ribbon -->
+                                <div
+                                    style="height: 8px; background: linear-gradient(to right, #FF6B1A 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%);">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                            <button class="btn-secondary" onclick="ElectWise.voteriq.print()"
+                                data-i18n="btn_download_cert">🖨️ Download Certificate</button>
+                            <button class="btn-primary" onclick="ElectWise.voteriq.share()"
+                                data-i18n="btn_share_score">📤 Share Score</button>
+                        </div>
+                        <button class="btn-secondary" style="margin-top: 1rem; border: none; background: none !important; color: var(--navy) !important; text-decoration: underline; cursor: pointer;"
+                            onclick="location.reload()" data-i18n="btn_retake">🔄 Retake Challenge</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: MYTH VS FACT -->
+        <section id="myths">
+
+            <h2 class="reveal"><span data-i18n="section_myth">Myth vs Fact</span>
+                <div class="heading-underline">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </h2>
+            <p class="reveal" style="text-align: center; margin-bottom: 2rem;" data-i18n="myth_sub">Click cards to bust
+                election myths.</p>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button class="btn-secondary" id="flipAllBtn" data-i18n="btn_flip_all">Flip All</button>
+                <button class="btn-secondary" id="resetMythBtn" data-i18n="btn_flip_reset">Reset</button>
+            </div>
+            <div id="myths_container">
+                <!-- injected via JS -->
+            </div>
+        </section>
+
+
+
+        <!-- SECTION 9: CALENDAR -->
+        <section id="calendar">
+
+            <h2 class="reveal"><span data-i18n="sec_cal_title">Election Reminders</span>
+                <div class="heading-underline">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </h2>
+            <div class="grid-3 reveal">
+                <div class="card calendar-card">
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">West Bengal Assembly Elections 2026</h3>
+                        <p style="color: #666; margin-bottom: 0.5rem;">Expected April–May 2026</p>
+                        <p style="font-size: 0.9rem;">West Bengal's 294-seat assembly goes to polls. Register before March
+                            2026. Verify exact dates at eci.gov.in.</p>
+                    </div>
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=West+Bengal+Assembly+Elections+2026&dates=20260401T000000Z/20260530T000000Z&details=West+Bengal's+294-seat+assembly+goes+to+polls.+Register+before+March+2026.&location=West+Bengal,+India"
+                        target="_blank" class="btn-primary" style="width: 100%;" data-i18n="btn_add_rem">📅 Add Reminder</a>
+                </div>
+                <div class="card calendar-card card-entrance">
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Kerala Assembly Elections 2026</h3>
+                        <p style="color: #666; margin-bottom: 0.5rem;">Expected April–May 2026</p>
+                        <p style="font-size: 0.9rem;">Kerala's 140-seat assembly election. Ensure your name is on the voter
+                            roll before the cutoff date.</p>
+                    </div>
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Kerala+Assembly+Elections+2026&dates=20260401T000000Z/20260530T000000Z&details=Kerala's+140-seat+assembly+election.+Ensure+your+name+is+on+the+voter+roll.&location=Kerala,+India"
+                        target="_blank" class="btn-primary" style="width: 100%;" data-i18n="btn_add_rem">📅 Add Reminder</a>
+                </div>
+                <div class="card calendar-card card-entrance">
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Tamil Nadu Assembly Elections 2026</h3>
+                        <p style="color: #666; margin-bottom: 0.5rem;">Expected April–May 2026</p>
+                        <p style="font-size: 0.9rem;">Tamil Nadu's 234-seat assembly election. Check voter registration
+                            status at voters.eci.gov.in.</p>
+                    </div>
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tamil+Nadu+Assembly+Elections+2026&dates=20260401T000000Z/20260530T000000Z&details=Tamil+Nadu's+234-seat+assembly+election.&location=Tamil+Nadu,+India"
+                        target="_blank" class="btn-primary" style="width: 100%;" data-i18n="btn_add_rem">📅 Add Reminder</a>
+                </div>
+            </div>
+            <p style="text-align: center; color: #d32f2f; font-size: 0.9rem; margin-top: 1rem;" data-i18n="cal_note">⚠️
+                Dates are indicative based on electoral cycles. Always verify exact schedules at www.eci.gov.in</p>
+        </section>
+
+        <!-- SECTION 10: GUIDE -->
+        <section id="guide">
+            <h2 class="reveal"><span data-i18n="sec_gd_title">First-Time Voter Guide</span></h2>
+            <div class="card reveal" style="max-width: 800px; margin: 0 auto; text-align: left;">
+                <div id="guide-steps">
+                    <div class="guide-step active" id="step1">
+                        <h3 data-i18n="gd_1_t">1. Eligibility</h3>
+                        <p data-i18n="gd_1_d">Must be 18+ and an Indian citizen.</p>
+                    </div>
+                    <div class="guide-step" id="step2">
+                        <h3 data-i18n="gd_2_t">2. Registration</h3>
+                        <p data-i18n="gd_2_d">Register on voters.eci.gov.in using Form 6.</p>
+                    </div>
+                    <div class="guide-step" id="step3">
+                        <h3 data-i18n="gd_3_t">3. Voter ID</h3>
+                        <p data-i18n="gd_3_d">Download your e-EPIC after approval.</p>
+                    </div>
+                    <div class="guide-step" id="step4">
+                        <h3 data-i18n="gd_4_t">4. Polling Booth</h3>
+                        <p data-i18n="gd_4_d">Find your booth on the Voter Helpline app.</p>
+                    </div>
+                    <div class="guide-step" id="step5">
+                        <h3 data-i18n="gd_5_t">5. Voting Day</h3>
+                        <p data-i18n="gd_5_d">Bring ID, get inked, and cast your vote!</p>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                    <button class="btn-secondary" onclick="moveGuide(-1)" id="prevBtn" disabled data-i18n="btn_prev">Previous</button>
+                    <span id="step-indicator" style="font-weight: 700; color: var(--navy);">Step 1 of 5</span>
+                    <button class="btn-primary" onclick="moveGuide(1)" id="nextBtn" data-i18n="btn_next">Next</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Confetti -->
+    <canvas id="confetti_canvas" class="confetti"></canvas>
+
+    <button id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+    <footer>
+        <h3 style="color: white; margin-bottom: 0.5rem;" data-i18n="footer_title">🗳️ ElectWise — Empowering Every Voter
+        </h3>
+        <p style="margin-bottom: 1.5rem; font-size: 0.9rem;" data-i18n="footer_source">Data sourced from Election
+            Commission of India. For official information visit <a href="https://eci.gov.in"
+                target="_blank">eci.gov.in</a></p>
+        <div class="footer-links"
+            style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; font-size: 0.9rem;">
+            <a href="https://eci.gov.in" target="_blank" data-i18n="footer_eci">Election Commission of India</a> |
+            <a href="tel:1950" data-i18n="footer_helpline">Voter Helpline (1950)</a> |
+            <a href="https://voters.eci.gov.in" target="_blank" data-i18n="footer_portal">voters.eci.gov.in</a>
+        </div>
+        <p style="font-size: 0.8rem; opacity: 0.7;" data-i18n="footer_copy">© 2026 ElectWise | Educational Platform |
+            Not affiliated with ECI</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.querySelectorAll('.tooltip-container button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const tip = e.target.nextElementSibling;
+                tip.style.display = tip.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.tooltip-container')) {
+                document.querySelectorAll('.tooltip-card').forEach(c => c.style.display = 'none');
+            }
+        });
+    </script>
+</body>
+
+</html>
