@@ -1,0 +1,16 @@
+{
+  "name": "electwise",
+  "version": "1.0.0",
+  "description": "ElectWise - India's Election Education Platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "firebase-admin": "^12.0.0"
+  }
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Certificate — ElectWise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0B1F4F;
+            --accent: #FF6B1A;
+            --green: #2E7D32;
+            --bg: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--primary);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .verify-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(11, 31, 79, 0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        p { color: #64748B; margin-bottom: 2rem; }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: #F1F5F9;
+            padding: 8px;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 107, 26, 0.1);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 12px 15px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        button:hover { background: var(--accent); transform: translateY(-2px); }
+
+        #result-area {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .result-card {
+            background: #F0FDF4;
+            border: 2px solid #BBF7D0;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verified-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--green);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .data-row { margin-bottom: 1rem; }
+        .label { font-size: 0.75rem; color: #166534; font-weight: 600; text-transform: uppercase; }
+        .value { font-size: 1.1rem; font-weight: 700; color: #064E3B; }
+
+        .error { color: #DC2626; font-weight: 600; background: #FEF2F2; padding: 1rem; border-radius: 12px; }
+
+        .back-link { margin-top: 2rem; display: block; color: var(--accent); text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="verify-card">
+            <h1>Verify Certificate</h1>
+            <p>Enter the unique code found on your ElectWise certificate.</p>
+            
+            <div class="search-box">
+                <input type="text" id="certCode" placeholder="EW-YYYYMMDD-XXXX" maxlength="20">
+                <button onclick="verify()">Verify</button>
+            </div>
+
+            <div class="loader" id="loader"></div>
+
+            <div id="result-area">
+                <!-- Data will be injected here -->
+            </div>
+
+            <a href="index.html" class="back-link">← Back to ElectWise</a>
+        </div>
+    </div>
+
+    <script>
+        async function verify() {
+            const code = document.getElementById('certCode').value.trim();
+            const resultArea = document.getElementById('result-area');
+            const loader = document.getElementById('loader');
+
+            if (!code) return;
+
+            resultArea.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch(`/api/verify/${code}`);
+                const data = await response.json();
+
+                loader.style.display = 'none';
+                resultArea.style.display = 'block';
+
+                if (data.valid) {
+                    resultArea.innerHTML = `
+                        <div class="result-card">
+                            <div class="verified-badge">VERIFIED</div>
+                            <div class="data-row">
+                                <div class="label">Issued To</div>
+                                <div class="value">${data.userName}</div>
+                            </div>
+                            <div class="data-row">
+                                <div class="label">Course/Quiz</div>
+                                <div class="value">Voter IQ Challenge</div>
+                            </div>
+                            <div class="data-row">
+                                <div class="label">Performance Score</div>
+                                <div class="value">${data.score}/200 (${data.percentage}%)</div>
+                            </div>
+                            <div class="data-row">
+                                <div class="label">Date of Achievement</div>
+                                <div class="value">${data.date}</div>
+                            </div>
+                            <div class="data-row">
+                                <div class="label">Certificate Code</div>
+                                <div class="value" style="font-family:monospace">${data.certificate_code}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultArea.innerHTML = `<div class="error">❌ Invalid Code. Please check the code and try again.</div>`;
+                }
+            } catch (err) {
+                loader.style.display = 'none';
+                resultArea.style.display = 'block';
+                resultArea.innerHTML = `<div class="error">⚠️ Unable to connect to verification server.</div>`;
+            }
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('certCode').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') verify();
+        });
+    </script>
+</body>
+</html>

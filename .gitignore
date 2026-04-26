@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Secrets (IMPORTANT: Keep these private!)
+.env
+backend/.env
+
+# Build/Deployment files
+app.yaml
+.gcloudignore
+
+# OS files
+.DS_Store
+Thumbs.db

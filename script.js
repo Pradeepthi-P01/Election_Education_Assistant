@@ -131,7 +131,7 @@ function applyLanguage(lang) {
     document.body.style.fontFamily = lang === 'hi'
         ? "'Poppins', 'Noto Sans Devanagari', sans-serif"
         : "'Poppins', sans-serif";
-    
+
     // Update dynamic components
     if (typeof ElectWise !== 'undefined') {
         if (ElectWise.dashboard) ElectWise.dashboard.update();
@@ -326,9 +326,9 @@ const ElectWise = {
             const district = document.getElementById('booth_dist').value;
             const res = document.getElementById('booth_list');
 
-            if (!state || !district) { 
+            if (!state || !district) {
                 if (res) res.innerHTML = '<p style="text-align:center; color:#999; padding:2rem;">Please select both state and district to see booths.</p>';
-                return; 
+                return;
             }
 
             const distData = stateDistrictData[state]?.districts?.[district];
@@ -421,20 +421,20 @@ const ElectWise = {
 
             const pd = statePartyData[state] || { parties: ["Party A", "Party B", "Party C", "Others"], colors: ["#FF6600", "#0078D7", "#006400", "#888"] };
             const pcts = [
-                35 + Math.floor(seededRandom(1) * 20), 
-                25 + Math.floor(seededRandom(2) * 15), 
-                10 + Math.floor(seededRandom(3) * 10), 
+                35 + Math.floor(seededRandom(1) * 20),
+                25 + Math.floor(seededRandom(2) * 15),
+                10 + Math.floor(seededRandom(3) * 10),
                 5 + Math.floor(seededRandom(4) * 5)
             ];
 
             return {
-                lokSabha: { 
-                    name: `${district} Lok Sabha Constituency`, 
-                    mp: "Data from ECI 2024", 
-                    party: pd.parties[0], 
-                    partyColor: pd.colors[0], 
-                    margin: 40000 + Math.floor(seededRandom(5) * 150000), 
-                    totalVotes: 600000 + Math.floor(seededRandom(6) * 500000) 
+                lokSabha: {
+                    name: `${district} Lok Sabha Constituency`,
+                    mp: "Data from ECI 2024",
+                    party: pd.parties[0],
+                    partyColor: pd.colors[0],
+                    margin: 40000 + Math.floor(seededRandom(5) * 150000),
+                    totalVotes: 600000 + Math.floor(seededRandom(6) * 500000)
                 },
                 vidhansabha: { name: `${district} Vidhan Sabha Constituency`, mla: "Data from State Election 2023/24", party: pd.parties[0], partyColor: pd.colors[0] },
                 stats: { registered: 800000 + Math.floor(seededRandom(7) * 700000), turnout: 60 + Math.floor(seededRandom(8) * 20), male: 51, female: 49 },
@@ -449,14 +449,14 @@ const ElectWise = {
             if (!s || !d) { alert("Please select both State and Constituency."); return; }
 
             const data = ElectWise.constituency.generateConstituencyResult(s, d);
-            
+
             // Trigger flash animation
             r.style.animation = 'none';
             r.offsetHeight; // trigger reflow
             r.style.animation = 'dataFlash 0.4s ease';
 
             r.style.display = 'block';
-            
+
             rc.innerHTML = `
                 <div class="const-header-row">
                     <div class="const-name-wrapper">
@@ -764,7 +764,7 @@ const ElectWise = {
         next: () => {
             const active = document.getElementById('iq_active');
             active.classList.add('zoom-out');
-            
+
             setTimeout(() => {
                 active.classList.remove('zoom-out');
                 ElectWise.voteriq.idx++;
@@ -777,7 +777,7 @@ const ElectWise = {
                 }
             }, 350);
         },
-        end: () => {
+        end: async () => {
             const active = document.getElementById('iq_active');
             const result = document.getElementById('iq_result');
 
@@ -795,18 +795,40 @@ const ElectWise = {
             }
 
             const sc = ElectWise.voteriq.score;
+            const name = document.getElementById('iq_name')?.value || "Voter";
             document.getElementById('iq_score_txt').innerText = sc;
             document.getElementById('cert_score').innerText = `${sc}/200`;
+            document.getElementById('cert_name').innerText = name;
 
             let grade = "";
-            if (sc >= 200) grade = "Democracy Champion";
-            else if (sc >= 150) grade = "Informed Citizen";
-            else if (sc >= 100) grade = "Active Voter";
-            else grade = "Democracy Learner";
+            if (sc >= 180) grade = "Democracy Champion";
+            else if (sc >= 140) grade = "Informed Voter";
+            else if (sc >= 100) grade = "Civic Learner";
+            else grade = "Beginner Voter";
 
             document.getElementById('cert_grade').innerText = grade;
             const d = new Date();
             document.getElementById('cert_date').innerText = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+
+            // SUBMIT TO BACKEND FOR OFFICIAL CERTIFICATE
+            const codeEl = document.getElementById('cert_code_display');
+            if (codeEl) codeEl.innerText = "Generating official code...";
+
+            try {
+                const response = await fetch('/api/quiz/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score: sc, name: name })
+                });
+                const data = await response.json();
+                if (data.certificate_code) {
+                    if (codeEl) codeEl.innerText = `CERTIFICATE ID: ${data.certificate_code}`;
+                    ElectWise.voteriq.lastCertCode = data.certificate_code;
+                }
+            } catch (err) {
+                console.error("Backend Error:", err);
+                if (codeEl) codeEl.innerText = "Offline Mode (No Verification Code)";
+            }
 
             if (!ElectWise.state.iqScore || sc > ElectWise.state.iqScore) {
                 LS.set('iqScore', sc);
@@ -821,7 +843,8 @@ const ElectWise = {
             const score = document.getElementById('cert_score')?.innerText || '0';
             const grade = document.getElementById('cert_grade')?.innerText || 'Learner';
             const date = document.getElementById('cert_date')?.innerText || new Date().toLocaleDateString();
-            
+            const certCode = ElectWise.voteriq.lastCertCode || "GENERATING... (Wait 2 seconds)";
+
             const printWin = window.open('', '_blank', 'width=900,height=700');
             printWin.document.write(`<!DOCTYPE html>
 <html><head><title>ElectWise Certificate - ${name}</title>
@@ -971,6 +994,7 @@ const ElectWise = {
             <div class="footer-text"><strong style="color:#0B1F4F;">ElectWise</strong><br>${t("cert_platform")}</div>
           </div>
         </div>
+        <div style="font-family: monospace; font-size: 0.7rem; color: #888; margin-top: 1rem; opacity: 0.8;">VERIFICATION ID: ${certCode}</div>
       </div>
     </div>
     <div class="tricolor-bar"></div>
@@ -985,11 +1009,11 @@ const ElectWise = {
         },
         share: () => {
             const sc = ElectWise.voteriq.score;
-            const text = currentLang === 'en' 
+            const text = currentLang === 'en'
                 ? `I scored ${sc}/200 on the ElectWise Voter IQ Challenge! 🗳️ Test your knowledge at ElectWise.`
                 : `मैंने ElectWise Voter IQ चैलेंज में ${sc}/200 स्कोर किया! 🗳️ ElectWise पर अपना ज्ञान परखें।`;
             if (navigator.share) {
-                navigator.share({ title: 'ElectWise Voter IQ', text: text }).catch(() => {});
+                navigator.share({ title: 'ElectWise Voter IQ', text: text }).catch(() => { });
             } else {
                 navigator.clipboard.writeText(text).then(() => alert(currentLang === 'en' ? 'Score copied to clipboard!' : 'स्कोर क्लिपबोर्ड पर कॉपी किया गया!')).catch(() => alert(text));
             }
@@ -1065,7 +1089,7 @@ const ElectWise = {
         nextStep: (n) => {
             const current = document.querySelector('.sim-step.active');
             const target = document.getElementById(`sim-step-${n}`);
-            
+
             if (current) {
                 current.classList.add('fade-out');
                 setTimeout(() => {
@@ -1135,7 +1159,7 @@ const ElectWise = {
             msgEl.innerText = t("sim_success_verify");
             msgEl.style.color = "#138808";
             msgEl.style.display = 'block';
-            
+
             const successIcon = document.getElementById('sim_success_icon');
             if (successIcon) {
                 successIcon.style.display = 'block';
@@ -1152,7 +1176,7 @@ const ElectWise = {
             ElectWise.sim.selectedCandidate = n;
             document.querySelectorAll('.evm-btn').forEach(b => b.style.background = 'white');
             const btns = document.querySelectorAll('.evm-btn');
-            if (btns[n-1]) btns[n-1].style.background = '#e3f2fd';
+            if (btns[n - 1]) btns[n - 1].style.background = '#e3f2fd';
             document.getElementById('sim_confirm_btn').disabled = false;
             // Beep
             try {
@@ -1161,7 +1185,7 @@ const ElectWise = {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime);
                 osc.connect(ctx.destination);
                 osc.start(); osc.stop(ctx.currentTime + 0.3);
-            } catch(e) {}
+            } catch (e) { }
         },
         castVote: () => {
             if (!ElectWise.sim.selectedCandidate) { alert('Select a candidate first!'); return; }
@@ -1210,7 +1234,7 @@ const ElectWise = {
                         </div>
                     `;
                 }).join('');
-                
+
                 // Animate progress bars after injection
                 setTimeout(() => {
                     container.querySelectorAll('.progress-bar-fill').forEach(bar => {
@@ -1228,12 +1252,12 @@ const ElectWise = {
             document.querySelectorAll('.sim-step').forEach(s => s.classList.remove('active'));
             document.getElementById('sim-step-1')?.classList.add('active');
             document.querySelectorAll('.evm-btn').forEach(b => b.style.background = 'white');
-            const cb = document.getElementById('sim_confirm_btn'); if(cb) cb.disabled = true;
-            const vm = document.getElementById('sim_verify_msg'); if(vm) vm.style.display = 'none';
-            const pb = document.getElementById('sim_proceed_btn'); if(pb) pb.style.display = 'none';
-            const vb = document.getElementById('sim_verify_btn'); if(vb) vb.disabled = false;
-            const si = document.getElementById('sim_success_icon'); if(si) si.style.display = 'none';
-            const vn = document.getElementById('sim_vvpat_next'); if(vn) vn.style.display = 'none';
+            const cb = document.getElementById('sim_confirm_btn'); if (cb) cb.disabled = true;
+            const vm = document.getElementById('sim_verify_msg'); if (vm) vm.style.display = 'none';
+            const pb = document.getElementById('sim_proceed_btn'); if (pb) pb.style.display = 'none';
+            const vb = document.getElementById('sim_verify_btn'); if (vb) vb.disabled = false;
+            const si = document.getElementById('sim_success_icon'); if (si) si.style.display = 'none';
+            const vn = document.getElementById('sim_vvpat_next'); if (vn) vn.style.display = 'none';
             LS.set('simComplete', '');
             ElectWise.state.simComplete = false;
             ElectWise.dashboard.update();
@@ -1430,13 +1454,13 @@ ElectWise.motion = {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
+
                 const rotateX = (y - centerY) / 20; // Max 5-10 deg
                 const rotateY = (centerX - x) / 20;
-                
+
                 card.style.setProperty('--tilt-x', `${rotateX}deg`);
                 card.style.setProperty('--tilt-y', `${rotateY}deg`);
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
@@ -1474,9 +1498,9 @@ ElectWise.motion = {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const easedProgress = easeOutQuint(progress);
-            
+
             const current = target * easedProgress;
-            
+
             if (target % 1 === 0) {
                 el.innerText = Math.floor(current) + suffix;
             } else {
@@ -1525,10 +1549,10 @@ ElectWise.motion = {
         const resize = () => {
             const rect = canvas.parentElement.getBoundingClientRect();
             if (rect.width === 0 || rect.height === 0) return;
-            
+
             width = canvas.width = rect.width;
             height = canvas.height = rect.height;
-            
+
             points = [];
             const spacing = 45;
             const rows = Math.ceil(height / spacing) + 2;
@@ -1561,16 +1585,16 @@ ElectWise.motion = {
             points.forEach(p => {
                 const dist = (p.baseX * 0.005) + (p.baseY * 0.005);
                 const wave = Math.sin(tick + dist) * 20;
-                
+
                 const drawX = p.baseX + Math.cos(tick + dist) * 8;
                 const drawY = p.baseY + wave;
 
                 const depthFactor = drawY / height;
-                const opacity = 0.15 + (depthFactor * 0.35); 
-                const radius = 1.2 + (depthFactor * 1.5); 
-                
+                const opacity = 0.15 + (depthFactor * 0.35);
+                const radius = 1.2 + (depthFactor * 1.5);
+
                 ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
-                
+
                 ctx.beginPath();
                 ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
                 ctx.fill();
@@ -1597,10 +1621,10 @@ ElectWise.motion = {
             if (rect.width === 0 || rect.height === 0) return;
             width = canvas.width = rect.width;
             height = canvas.height = rect.height;
-            
+
             // Create static/faint symbols
             symbols = [];
-            for(let i = 0; i < 15; i++) {
+            for (let i = 0; i < 15; i++) {
                 symbols.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
@@ -1649,7 +1673,7 @@ ElectWise.motion = {
             ripples.forEach((r, i) => {
                 r.r += 2;
                 r.opacity -= 0.003;
-                
+
                 ctx.strokeStyle = `rgba(0, 162, 255, ${r.opacity})`;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
@@ -1692,13 +1716,13 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
-                
+
                 // Re-trigger animations for children
                 const title = entry.target.querySelector('.const-explorer-title');
                 const underline = entry.target.querySelector('.const-title-underline');
                 const leftCard = entry.target.querySelector('.constituency-left-card');
                 const rightCard = entry.target.querySelector('.constituency-right-card');
-                
+
                 if (title) { title.style.animation = 'none'; title.offsetHeight; title.style.animation = 'titleReveal 0.7s cubic-bezier(0.23,1,0.32,1)'; }
                 if (underline) { underline.style.animation = 'none'; underline.offsetHeight; underline.style.animation = 'lineGrow 0.8s cubic-bezier(0.23,1,0.32,1) forwards'; }
                 if (leftCard) { leftCard.style.animation = 'none'; leftCard.offsetHeight; leftCard.style.animation = 'slideInLeft 0.6s cubic-bezier(0.23,1,0.32,1) 0.1s both'; }
@@ -1713,20 +1737,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ripple effect for Analyze Data button
     const btnAnalyze = document.getElementById('btnAnalyze');
     if (btnAnalyze) {
-        btnAnalyze.addEventListener('click', function(e) {
+        btnAnalyze.addEventListener('click', function (e) {
             const ripple = document.createElement('span');
             ripple.classList.add('ripple');
             this.appendChild(ripple);
-            
+
             const rect = this.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
-            
+
             ripple.style.width = ripple.style.height = `${size}px`;
             ripple.style.left = `${x}px`;
             ripple.style.top = `${y}px`;
-            
+
             ripple.addEventListener('animationend', () => ripple.remove());
         });
     }
@@ -1745,3 +1769,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
