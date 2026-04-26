@@ -690,8 +690,14 @@ const ElectWise = {
             if (!name) { alert("Please enter your name for the certificate."); return; }
 
             document.getElementById('cert_name').innerText = name;
-            ElectWise.voteriq.qns = [...voterIqData].sort(() => 0.5 - Math.random()).slice(0, 10);
             ElectWise.voteriq.idx = 0; ElectWise.voteriq.score = 0;
+
+            // Pick a balanced mix to ensure total possible = 200 pts
+            const easy = voterIqData.filter(q => q.diff === 1).sort(() => 0.5 - Math.random()).slice(0, 4);
+            const med = voterIqData.filter(q => q.diff === 2).sort(() => 0.5 - Math.random()).slice(0, 2);
+            const hard = voterIqData.filter(q => q.diff === 3).sort(() => 0.5 - Math.random()).slice(0, 4);
+            
+            ElectWise.voteriq.qns = [...easy, ...med, ...hard].sort(() => 0.5 - Math.random());
 
             const start = document.getElementById('iq_start');
             const result = document.getElementById('iq_result');
