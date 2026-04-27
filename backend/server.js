@@ -1,126 +1,132 @@
-const admin = require('firebase-admin');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const path = require('path');
-
-// Initialize environment variables
-dotenv.config();
-
-// Import Firebase database instance
 const { db } = require('./firebase-setup');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 
-// Middleware
+// === AI Initialization ===
+const { VertexAI } = require('@google-cloud/vertexai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// Vertex AI (for GCP Credits)
+const vertex_ai = new VertexAI({
+  project: process.env.FIREBASE_PROJECT_ID || 'electwise-18848',
+  location: 'asia-south1',
+  googleAuthOptions: {
+    credentials: {
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      private_key: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+    }
+  }
+});
+
+// AI Studio (Fallback)
+const genAI = new GoogleGenerativeAI((process.env.GEMINI_API_KEY || "").trim());
+
+// === Middleware ===
 app.use(cors());
 app.use(express.json());
-
-// Serve static files from the parent directory
 app.use(express.static(path.join(__dirname, '../')));
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: "ok", app: "ElectWise" });
-});
+// === AI Chat Endpoint ===
+app.post('/api/ai/chat', async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.status(400).json({ error: "Message required" });
 
-// Database health check
-app.get('/api/health/db', async (req, res) => {
-  try {
-    if (!db) throw new Error("Firestore not initialized");
-    await db.listCollections();
-    res.json({ database: "connected" });
-  } catch (error) {
-    res.status(500).json({ database: "error", message: error.message });
-  }
-});
+  const models = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
 
-/**
- * POST /api/quiz/submit (Public)
- * Submits quiz score and generates certificate
- */
-app.post('/api/quiz/submit', async (req, res) => {
-  const { score, name } = req.body;
-
-  if (typeof score !== 'number' || score < 0 || score > 200) {
-    return res.status(400).json({ error: "Score must be 0-200" });
-  }
-  if (!name || typeof name !== 'string' || name.trim().length === 0) {
-    return res.status(400).json({ error: "Name is required" });
-  }
-
-  try {
-    let grade = "Beginner Voter";
-    if (score >= 180) grade = "Democracy Champion";
-    else if (score >= 140) grade = "Informed Voter";
-    else if (score >= 100) grade = "Civic Learner";
-
-    const percentage = Math.round((score / 200) * 100);
-
-    const date = new Date();
-    const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
-    const certificateCode = `EW-${dateStr}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-
-    const scoreData = {
-      name: name.trim(),
-      score,
-      percentage,
-      grade,
-      certificate_code: certificateCode,
-      date: admin.firestore.FieldValue.serverTimestamp(),
-      verified: true
-    };
-
-    const scoreRef = await db.collection('quiz_scores').add(scoreData);
-
-    res.json({
-      certificateId: scoreRef.id,
-      grade,
-      certificate_code: certificateCode,
-      verified: true,
-      score,
-      percentage
-    });
-  } catch (error) {
-    console.error("Quiz submission error:", error);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-/**
- * GET /api/verify/:certificateCode (Public)
- * Publicly verify a certificate
- */
-app.get('/api/verify/:certificateCode', async (req, res) => {
-  const { certificateCode } = req.params;
-  try {
-    const scoreQuery = await db.collection('quiz_scores')
-      .where('certificate_code', '==', certificateCode)
-      .limit(1)
-      .get();
-
-    if (scoreQuery.empty) {
-      return res.status(404).json({ valid: false, message: "Certificate not found" });
+  // 1. Try Vertex AI First
+  for (const modelName of models) {
+    try {
+      console.log(`🤖 AI: Trying Vertex (${modelName})...`);
+      const model = vertex_ai.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent({ contents: [{ role: 'user', parts: [{ text: message }] }] });
+      const text = result.response.candidates[0].content.parts[0].text;
+      console.log(`✅ AI: Success with Vertex (${modelName})`);
+      return res.json({ reply: text });
+    } catch (e) {
+      console.warn(`⚠️ Vertex (${modelName}) failed: ${e.message}`);
     }
-
-    const data = scoreQuery.docs[0].data();
-    const dateObj = data.date ? data.date.toDate() : new Date();
-
-    res.json({
-      valid: true,
-      userName: data.name,
-      score: data.score,
-      percentage: data.percentage,
-      grade: data.grade,
-      date: dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-      certificate_code: data.certificate_code
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Database error" });
   }
+
+  // 2. Try API Key Fallback
+  console.log("🔄 Vertex failed entirely. Trying API Key fallback...");
+  for (const modelName of models) {
+    try {
+      console.log(`🤖 AI: Trying API Key (${modelName})...`);
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(message);
+      const text = result.response.text();
+      console.log(`✅ AI: Success with API Key (${modelName})`);
+      return res.json({ reply: text });
+    } catch (e) {
+      console.warn(`⚠️ API Key (${modelName}) failed: ${e.message}`);
+    }
+  }
+
+  console.error("❌ AI: All models and methods failed.");
+  res.status(500).json({ reply: "I'm having trouble connecting to all AI brains. Please check your internet and API keys!" });
+});
+
+// === Data Endpoints ===
+app.get('/api/candidates', async (req, res) => {
+  try {
+    const { state, district } = req.query;
+    let query = db.collection('candidates');
+    if (state) query = query.where('state', '==', state);
+    if (district) query = query.where('district', '==', district);
+    const snap = await query.get();
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/trends', async (req, res) => {
+  try {
+    const snap = await db.collection('vote_trends').get();
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/news', async (req, res) => {
+  try {
+    const snap = await db.collection('news').orderBy('timestamp', 'desc').limit(10).get();
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/myths', async (req, res) => {
+  try {
+    const snap = await db.collection('myths').get();
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/quiz/questions', async (req, res) => {
+  try {
+    const snap = await db.collection('quiz_questions').get();
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/certificate/generate', async (req, res) => {
+  try {
+    const { name, score } = req.body;
+    const code = 'EW-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    const docRef = await db.collection('certificates').add({ name, score, certificate_code: code, timestamp: new Date() });
+    const doc = await docRef.get();
+    const d = doc.data();
+    res.json({ success: true, id: doc.id, name: d.name, score: d.score, date: d.timestamp.toDate().toLocaleDateString('en-IN'), certificate_code: d.certificate_code });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.listen(PORT, () => {
-  console.log(`ElectWise backend running on port ${PORT}`);
+  console.log(`🚀 ElectWise running on http://localhost:${PORT}`);
 });

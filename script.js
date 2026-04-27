@@ -685,17 +685,27 @@ const ElectWise = {
 
     voteriq: {
         idx: 0, score: 0, qns: [],
-        start: () => {
+        start: async () => {
             const name = document.getElementById('iq_name').value.trim();
             if (!name) { alert("Please enter your name for the certificate."); return; }
 
             document.getElementById('cert_name').innerText = name;
             ElectWise.voteriq.idx = 0; ElectWise.voteriq.score = 0;
 
+            // Fetch questions from Firestore via Backend
+            let qns = [];
+            try {
+                const res = await fetch('/api/quiz/questions');
+                qns = await res.json();
+            } catch (err) {
+                console.error("Fetch error, falling back to local data", err);
+                qns = typeof voterIqData !== 'undefined' ? voterIqData : [];
+            }
+
             // Pick a balanced mix to ensure total possible = 200 pts
-            const easy = voterIqData.filter(q => q.diff === 1).sort(() => 0.5 - Math.random()).slice(0, 4);
-            const med = voterIqData.filter(q => q.diff === 2).sort(() => 0.5 - Math.random()).slice(0, 2);
-            const hard = voterIqData.filter(q => q.diff === 3).sort(() => 0.5 - Math.random()).slice(0, 4);
+            const easy = qns.filter(q => q.diff === 1).sort(() => 0.5 - Math.random()).slice(0, 4);
+            const med = qns.filter(q => q.diff === 2).sort(() => 0.5 - Math.random()).slice(0, 2);
+            const hard = qns.filter(q => q.diff === 3).sort(() => 0.5 - Math.random()).slice(0, 4);
             
             ElectWise.voteriq.qns = [...easy, ...med, ...hard].sort(() => 0.5 - Math.random());
 
@@ -1027,11 +1037,21 @@ const ElectWise = {
     },
 
     myths: {
-        init: () => {
+        init: async () => {
             const container = document.getElementById('myths_container');
             if (!container) return;
+            container.innerHTML = '<div style="color:white; grid-column: 1 / -1; text-align:center;">Loading Myths...</div>';
+            
+            let data = [];
+            try {
+                const res = await fetch(`/api/myths?lang=${currentLang}`);
+                data = await res.json();
+            } catch (err) {
+                console.error("Fetch error, falling back to local data", err);
+                data = currentLang === 'en' ? ElectWiseData.mythData_en : ElectWiseData.mythData_hi;
+            }
+
             container.innerHTML = '';
-            const data = currentLang === 'en' ? ElectWiseData.mythData_en : ElectWiseData.mythData_hi;
             data.forEach((item, i) => {
                 const card = document.createElement('div');
                 card.className = 'myth-card-wrapper';
@@ -1775,4 +1795,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// === AI ASSISTANT FUNCTIONS ===
+function toggleAIChat() {
+    const window = document.getElementById('ai_chat_window');
+    window.style.display = window.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function sendAIMessage() {
+    const input = document.getElementById('ai_user_input');
+    const msgArea = document.getElementById('ai_chat_messages');
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    // Add user message to UI
+    const userMsg = document.createElement('div');
+    userMsg.className = 'user-msg';
+    userMsg.innerText = text;
+    msgArea.appendChild(userMsg);
+    input.value = '';
+    msgArea.scrollTop = msgArea.scrollHeight;
+
+    // Add "Thinking..." indicator
+    const botMsg = document.createElement('div');
+    botMsg.className = 'ai-msg';
+    botMsg.innerText = "Thinking...";
+    msgArea.appendChild(botMsg);
+    msgArea.scrollTop = msgArea.scrollHeight;
+
+    try {
+        const response = await fetch('http://localhost:8081/api/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        botMsg.innerText = data.reply || "Sorry, I encountered an error.";
+    } catch (err) {
+        botMsg.innerText = "Sorry, I'm offline. Please check your connection!";
+    }
+    msgArea.scrollTop = msgArea.scrollHeight;
+}
 
