@@ -1825,7 +1825,7 @@ async function sendAIMessage() {
     msgArea.scrollTop = msgArea.scrollHeight;
 
     try {
-        const response = await fetch('http://localhost:8081/api/ai/chat', {
+        const response = await fetch('/api/ai/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
