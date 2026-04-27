@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { db } = require('./firebase-setup');
+const helmet = require('helmet');
+const compression = require('compression');
+const { body, validationResult } = require('express-validator');
 
 const app = express();
 const PORT = process.env.PORT || 8081;
@@ -27,14 +30,22 @@ const vertex_ai = new VertexAI({
 const genAI = new GoogleGenerativeAI((process.env.GEMINI_API_KEY || "").trim());
 
 // === Middleware ===
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow external scripts/images for now
+}));
+app.use(compression());
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../')));
 
 // === AI Chat Endpoint ===
-app.post('/api/ai/chat', async (req, res) => {
+app.post('/api/ai/chat', [
+  body('message').isString().trim().isLength({ min: 1, max: 1000 }).escape()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  
   const { message } = req.body;
-  if (!message) return res.status(400).json({ error: "Message required" });
 
   const models = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
 

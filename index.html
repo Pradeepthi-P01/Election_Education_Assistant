@@ -928,7 +928,7 @@
     <canvas id="confetti_canvas" class="confetti"></canvas>
 
     <!-- AI Assistant Chat -->
-    <div id="ai_chat_bubble" onclick="toggleAIChat()" title="Ask ElectWise AI">
+    <div id="ai_chat_bubble" onclick="toggleAIChat()" title="Ask ElectWise AI Assistant" aria-label="Open AI Assistant" role="button">
         🤖
     </div>
     <div id="ai_chat_window" style="display: none;">
@@ -940,8 +940,8 @@
             <div class="ai-msg">Hello! I'm your ElectWise Assistant. How can I help you today?</div>
         </div>
         <div id="ai_chat_input_area">
-            <input type="text" id="ai_user_input" placeholder="Ask about elections..." onkeypress="if(event.key==='Enter') sendAIMessage()">
-            <button onclick="sendAIMessage()" id="ai_send_btn">Send</button>
+            <input type="text" id="ai_user_input" placeholder="Ask about elections..." onkeypress="if(event.key==='Enter') sendAIMessage()" aria-label="AI Chat message input">
+            <button onclick="sendAIMessage()" id="ai_send_btn" aria-label="Send message to AI">Send</button>
         </div>
     </div>
 
