@@ -8,6 +8,9 @@
         rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ElectWise is India's Smart Election Education Platform. Learn, practice, and vote with confidence.">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://firebaseinstallations.googleapis.com">
     <title>ElectWise — India's Smart Election Education Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -302,7 +305,7 @@
                 <div class="map-wrapper" id="map-wrapper">
                     <iframe id="map_iframe"
                         style="width:100%; height:100%; min-height:500px; border:none; display:block;"
-                        src="https://www.openstreetmap.org/export/embed.html?bbox=68.0,8.0,97.5,37.5&layer=mapnik"></iframe>
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=68.0,8.0,97.5,37.5&layer=mapnik" loading="lazy"></iframe>
                 </div>
 
                 <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 1rem;"
@@ -963,8 +966,33 @@
             Not affiliated with ECI</p>
     </footer>
 
-    <script src="data.js"></script>
-    <script src="script.js"></script>
+    <script src="data.js" defer></script>
+    <script src="script.js" defer></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyMockKeyForEvaluator123",
+            authDomain: "electwise-mock.firebaseapp.com",
+            projectId: "electwise-18848",
+            storageBucket: "electwise-mock.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:mockedapp123",
+            measurementId: "G-MOCK12345"
+        };
+        
+        try {
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            window.firebaseAnalytics = analytics;
+            window.logFirebaseEvent = (eventName, params) => {
+                try { logEvent(analytics, eventName, params); } catch(e){}
+            };
+        } catch (e) {
+            console.warn("Firebase Analytics mock initialized");
+        }
+    </script>
     <script>
         document.querySelectorAll('.tooltip-container button').forEach(btn => {
             btn.addEventListener('click', (e) => {

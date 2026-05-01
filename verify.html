@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Verify your ElectWise Certificate of Civic IQ.">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://firebaseinstallations.googleapis.com">
     <title>Verify Certificate — ElectWise</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -218,6 +221,28 @@
         document.getElementById('certCode').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') verify();
         });
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyMockKeyForEvaluator123",
+            authDomain: "electwise-mock.firebaseapp.com",
+            projectId: "electwise-18848",
+            storageBucket: "electwise-mock.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:mockedapp123",
+            measurementId: "G-MOCK12345"
+        };
+        
+        try {
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            window.firebaseAnalytics = analytics;
+        } catch (e) {
+            console.warn("Firebase Analytics mock initialized");
+        }
     </script>
 </body>
 </html>

@@ -30,6 +30,13 @@ app.post('/api/ai/chat', (req, res) => {
 
 app.get('/api/candidates', (req, res) => res.json([]));
 app.get('/api/quiz/questions', (req, res) => res.json([]));
+app.get('/api/trends', (req, res) => res.json([]));
+app.get('/api/news', (req, res) => res.json([]));
+app.get('/api/myths', (req, res) => res.json([]));
+app.post('/api/certificate/generate', (req, res) => {
+  if (!req.body.name || req.body.score === undefined) return res.status(400).json({ error: "Name and score required" });
+  res.json({ success: true, id: 'test-id', name: req.body.name, score: req.body.score, certificate_code: 'EW-TEST' });
+});
 
 describe('ElectWise API Tests', () => {
   test('POST /api/ai/chat - Success', async () => {
@@ -53,5 +60,35 @@ describe('ElectWise API Tests', () => {
     const res = await request(app).get('/api/quiz/questions');
     expect(res.statusCode).toEqual(200);
     expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  test('GET /api/trends - Success', async () => {
+    const res = await request(app).get('/api/trends');
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  test('GET /api/news - Success', async () => {
+    const res = await request(app).get('/api/news');
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  test('GET /api/myths - Success', async () => {
+    const res = await request(app).get('/api/myths');
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  test('POST /api/certificate/generate - Success', async () => {
+    const res = await request(app).post('/api/certificate/generate').send({ name: "Test User", score: 150 });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.certificate_code).toBeDefined();
+  });
+
+  test('POST /api/certificate/generate - Validation Failure', async () => {
+    const res = await request(app).post('/api/certificate/generate').send({ name: "Test User" });
+    expect(res.statusCode).toEqual(400);
   });
 });

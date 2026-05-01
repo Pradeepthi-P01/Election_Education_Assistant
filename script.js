@@ -169,7 +169,14 @@ function generateBooths(stateName, districtName) {
     }));
 }
 
+/**
+ * @namespace ElectWise
+ * @description Main application controller handling states, routing, and core component logic.
+ */
 const ElectWise = {
+    /**
+     * @property {Object} state - Centralized state management for the application.
+     */
     state: {
         iqScore: LS.get('iqScore') || null,
         candFilter: LS.get('candFilter') || 'All',
@@ -179,6 +186,10 @@ const ElectWise = {
         guideComplete: LS.get('guideComplete') === 'true',
     },
     dashboard: {
+        /**
+         * @function update
+         * @description Updates the personalized dashboard based on current user progress.
+         */
         update: () => {
             const el = LS.get('eligibility');
             const iq = LS.get('iqScore');
@@ -214,6 +225,10 @@ const ElectWise = {
     },
 
     eligibility: {
+        /**
+         * @function init
+         * @description Initializes the eligibility checker and restores previous results.
+         */
         init: () => {
             if (ElectWise.state.eligibility) ElectWise.eligibility.showResult(ElectWise.state.eligibility);
             // Tooltip listener for Sound Mind
@@ -225,6 +240,11 @@ const ElectWise = {
                 document.querySelector('.tooltip-container')?.classList.remove('active');
             });
         },
+        /**
+         * @function check
+         * @param {Event} [e] - Optional form submit event
+         * @description Validates input parameters to determine voting eligibility.
+         */
         check: (e) => {
             if (e) e.preventDefault();
             const age = document.getElementById('el_age').value;
@@ -255,6 +275,10 @@ const ElectWise = {
     },
 
     timeline: {
+        /**
+         * @function init
+         * @description Renders the interactive election timeline based on current language.
+         */
         init: () => {
             const wrap = document.getElementById('tl_container');
             if (!wrap) return;
@@ -279,6 +303,10 @@ const ElectWise = {
     },
 
     booths: {
+        /**
+         * @function init
+         * @description Initializes the booth finder maps and populates the state dropdown.
+         */
         init: () => {
             const stateSel = document.getElementById('booth_state');
             if (!stateSel) return;
@@ -374,6 +402,10 @@ const ElectWise = {
     },
 
     constituency: {
+        /**
+         * @function init
+         * @description Initializes the constituency explorer and cascades district selections.
+         */
         init: () => {
             const s = document.getElementById('constituencyState');
             if (!s) return;
@@ -685,6 +717,11 @@ const ElectWise = {
 
     voteriq: {
         idx: 0, score: 0, qns: [],
+        /**
+         * @async
+         * @function start
+         * @description Fetches adaptive questions and starts the Voter IQ Challenge.
+         */
         start: async () => {
             const name = document.getElementById('iq_name').value.trim();
             if (!name) { alert("Please enter your name for the certificate."); return; }
